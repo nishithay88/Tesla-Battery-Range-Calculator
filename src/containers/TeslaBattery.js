@@ -6,6 +6,7 @@ import TeslaStats from '../components/TeslaStats/TeslaStats';
 import { getModelData } from '../services/BatteryService';
 import TeslaCounter from '../components/TeslaCounter/TeslaCounter';
 import TeslaClimate from '../components/TeslaClimate/TeslaClimate';
+import TeslaWheels from '../components/TeslaWheels/TeslaWheels';
 
 class TeslaBattery extends React.Component{
     constructor(props){
@@ -17,6 +18,7 @@ class TeslaBattery extends React.Component{
         this.decrement = this.decrement.bind(this);
         this.updateCounterState = this.updateCounterState.bind(this);
         this.handleChangeClimate = this.handleChangeClimate.bind(this);
+        this.handleChangeWheels = this.handleChangeWheels.bind(this);
 
         this.state={
             carstats:[],
@@ -54,7 +56,7 @@ class TeslaBattery extends React.Component{
         // update config state with new value
         title === 'Speed' ? config['speed'] = newValue : config['temperature'] = newValue;
         // update our state
-        this.setState({ config });
+        this.setState({ config }, () => {this.statsUpdate()});
     }
 
     increment(e, title) {
@@ -101,6 +103,12 @@ class TeslaBattery extends React.Component{
         this.setState({ config });
     }
 
+    handleChangeWheels(size) {
+        const config = {...this.state.config};
+        config['wheels'] = size;
+        this.setState({ config });
+    }
+
 
     render(){
         const {config,carstats} = this.state;
@@ -128,7 +136,12 @@ class TeslaBattery extends React.Component{
                             limit={this.state.config.temperature > 10}
                             handleChangeClimate={this.handleChangeClimate}
                         />
-                    </div></div>
+                    </div>
+                    <TeslaWheels
+                        value={this.state.config.wheels}
+                        handleChangeWheels={this.handleChangeWheels}
+                    />
+                </div>
 
                 <TeslaNotice/>
             </form>
